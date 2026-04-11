@@ -4,111 +4,143 @@ import re
 import time
 
 
+
 # 1. ITERATOR
 
 class CountUp:
-    """Counts from 'start' up to 'stop' one step at a time."""
+    """Counts from 'start' up to 'limit' one step at a time."""
 
-    def __init__(self, start, stop):
+    def __init__(self, start, limit):
         self.current = start
-        self.stop = stop
+        self.limit = limit
 
     def __iter__(self):
-        return self                      # the object itself is the iterator
+        return self                     # the object itself is the iterator
 
     def __next__(self):
-        if self.current > self.stop:
-            raise StopIteration          # signals "no more items"
+        if self.current > self.limit:
+            raise StopIteration         # signal: nothing left to iterate
         value = self.current
         self.current += 1
         return value
 
-
-print("=" * 50)
-print("1. ITERATOR – CountUp(1, 5)")
-print("=" * 50)
-for num in CountUp(1, 5):
-    print(num, end="  ")
-print("\n")
 
 
 # 2. GENERATOR
 
 def even_numbers(limit):
     """Yields even numbers from 0 up to limit."""
-    for n in range(0, limit + 1, 2):
-        yield n                          # pauses here and returns n
+    for num in range(0, limit + 1, 2):
+        yield num                       # pauses here and resumes on next()
 
-
-print("=" * 50)
-print("2. GENERATOR – even_numbers(10)")
-print("=" * 50)
-for even in even_numbers(10):
-    print(even, end="  ")
-print("\n")
 
 
 # 3. DECORATOR
-
+#  
 def timer(func):
-    """Decorator: prints how long 'func' took to run."""
+    """Decorator: prints how long a function takes to run."""
     def wrapper(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
         end = time.time()
-        print(f"  ⏱  '{func.__name__}' ran in {end - start:.4f} seconds")
+        print(f"  [timer] '{func.__name__}' ran in {end - start:.4f} seconds")
         return result
     return wrapper
 
 
-@timer                                   # same as: greet = timer(greet)
+@timer                                  # same as: greet = timer(greet)
 def greet(name):
-    time.sleep(0.1)                      # simulate some work
-    print(f"  Hello, {name}!")
+    """A simple greeter (decorated with @timer)."""
+    message = f"Hello, {name}! Welcome to Python."
+    print(f"  >> {message}")
+    return message
 
-
-print("=" * 50)
-print("3. DECORATOR – @timer on greet()")
-print("=" * 50)
-greet("Alice")
-print()
 
 
 # 4. CLOSURE
 
 def make_multiplier(factor):
     """Returns a function that multiplies any number by 'factor'."""
-    def multiply(number):
-        return number * factor           # 'factor' is remembered (closed over)
-    return multiply
+    def multiply(number):               # 'factor' is captured in closure
+        return number * factor
+    return multiply                     # returns the inner function
 
 
-double = make_multiplier(2)
-triple = make_multiplier(3)
 
-print("=" * 50)
-print("4. CLOSURE – make_multiplier()")
-print("=" * 50)
-print(f"  double(5) = {double(5)}")
-print(f"  triple(5) = {triple(5)}")
-print()
+# 5. REGULAR EXPRESSIONS (regex)
+
+def validate_and_extract(text):
+    """
+    Uses regex to:
+      - validate an email address
+      - extract all phone numbers
+      - find all hashtags
+    """
+    # Email validation
+    email_pattern = r'^[\w\.-]+@[\w\.-]+\.\w{2,}$'
+    email = "user.name@example.com"
+    is_valid = bool(re.match(email_pattern, email))
+    print(f"  Email '{email}' -> {'VALID' if is_valid else 'INVALID'}")
+
+    # Extract phone numbers
+    phone_pattern = r'\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b'
+    phones = re.findall(phone_pattern, text)
+    print(f"  Phone numbers found : {phones}")
+
+    # Extract hashtags
+    hashtag_pattern = r'#\w+'
+    hashtags = re.findall(hashtag_pattern, text)
+    print(f"  Hashtags found      : {hashtags}")
 
 
-# 5. REGULAR EXPRESSION (re)
+#  MAIN — run all five concepts
 
-text = "Contact us at support@example.com or sales@company.org for help."
+if __name__ == "__main__":
 
-email_pattern = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+    # 1. Iterator
+    print("=" * 50)
+    print("1. ITERATOR  —  CountUp(1, 5)")
+    print("=" * 50)
+    counter = CountUp(1, 5)
+    for num in counter:
+        print(f"  {num}", end=" ")
+    print()
 
-emails_found = re.findall(email_pattern, text)
+    # 2. Generator
+    print("\n" + "=" * 50)
+    print("2. GENERATOR  —  even_numbers(10)")
+    print("=" * 50)
+    for even in even_numbers(10):
+        print(f"  {even}", end=" ")
+    print()
 
-print("=" * 50)
-print("5. REGULAR EXPRESSION – find emails")
-print("=" * 50)
-print(f"  Text   : {text}")
-print(f"  Emails : {emails_found}")
-print()
+    # 3. Decorator
+    print("\n" + "=" * 50)
+    print("3. DECORATOR  —  @timer on greet()")
+    print("=" * 50)
+    greet("Alice")
 
-print("=" * 50)
-print("All 5 concepts demonstrated successfully!")
-print("=" * 50)
+    # 4. Closure
+    print("\n" + "=" * 50)
+    print("4. CLOSURE  —  make_multiplier()")
+    print("=" * 50)
+    double = make_multiplier(2)         # 'factor' = 2 is remembered
+    triple = make_multiplier(3)         # 'factor' = 3 is remembered
+    print(f"  double(6) = {double(6)}")
+    print(f"  triple(6) = {triple(6)}")
+
+    # 5. Regular Expressions
+    print("\n" + "=" * 50)
+    print("5. REGULAR EXPRESSIONS")
+    print("=" * 50)
+    sample_text = (
+        "Call me at 123-456-7890 or 987.654.3210. "
+        "#Python #coding is fun! "
+        "Office: 555 123 4567"
+    )
+    print(f"  Text: {sample_text}")
+    validate_and_extract(sample_text)
+
+    print("\n" + "=" * 50)
+    print("All 5 concepts demonstrated successfully!")
+    print("=" * 50)
