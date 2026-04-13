@@ -6,7 +6,6 @@
 """
 
 import numpy as np
-import numpy.random as npr
 
 # ─────────────────────────────────────────────────────────
 # 1. ARRAY CREATION
@@ -262,13 +261,13 @@ print("\n" + "="*50)
 print("12. NUMPY RANDOM MODULE")
 print("="*50)
 
-rng = npr.default_rng(seed=42)   # reproducible random generator
+rng = np.random.default_rng(seed=42)   # reproducible random generator
 
 # Basic random
-print("random()         :", npr.random())
-print("rand(3,2):\n",        npr.rand(3, 2))
-print("randn(3)         :", npr.randn(3))
-print("randint(1,10,5)  :", npr.randint(1, 10, 5))
+print("random()         :", np.random.random())
+print("rand(3,2):\n",        np.random.rand(3, 2))
+print("randn(3)         :", np.random.randn(3))
+print("randint(1,10,5)  :", np.random.randint(1, 10, 5))
 
 # Distributions
 print("\n-- Distributions --")
@@ -284,10 +283,10 @@ print("chisquare(2,4)   :", rng.chisquare(2, 4))
 # Sampling & shuffling
 arr = np.arange(10)
 print("\nOriginal         :", arr)
-npr.shuffle(arr)
+np.random.shuffle(arr)
 print("After shuffle    :", arr)
-print("Choice(5, 3, no replace):", npr.choice(np.arange(5), 3, replace=False))
-print("Permutation      :", npr.permutation(6))
+print("Choice(5, 3, no replace):", np.random.choice(np.arange(5), 3, replace=False))
+print("Permutation      :", np.random.permutation(6))
 
 # ─────────────────────────────────────────────────────────
 # 13. BROADCASTING
