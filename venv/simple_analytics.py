@@ -73,5 +73,5 @@ axes[2].legend()
 axes[2].grid(True, linestyle="--", alpha=0.5)
 
 plt.tight_layout()
-plt.savefig("/mnt/user-data/outputs/simple_analytics.png", dpi=150, bbox_inches="tight")
+plt.savefig("simple_analytics.png", dpi=150, bbox_inches="tight")
 print("\n✅ Chart saved: simple_analytics.png")
